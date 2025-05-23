@@ -18,7 +18,7 @@ export default function SynthHRApp() {
 
   const handleSend = async () => {
     if (!input) return;
-    const userMessage = { role: "user", text: input };
+    const userMessage: Message = { role: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
@@ -30,7 +30,7 @@ export default function SynthHRApp() {
       });
 
       const data = await response.json();
-      const aiMessage = { role: "ai", text: data.reply };
+      const aiMessage: Message = { role: "ai", text: data.reply };
       setMessages((prev) => [...prev, aiMessage]);
       setCurrentDoc(data.reply);
     } catch (error) {
