@@ -4,11 +4,17 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 
+type Message = {
+  role: "user" | "ai";
+  text: string;
+};
+
 export default function SynthHRApp() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [templates, setTemplates] = useState([]);
+  const [templates, setTemplates] = useState<string[]>([]);
   const [currentDoc, setCurrentDoc] = useState("");
+
 
   const handleSend = async () => {
     if (!input) return;
