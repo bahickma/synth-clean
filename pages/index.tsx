@@ -15,7 +15,6 @@ export default function SynthHRApp() {
   const [templates, setTemplates] = useState<string[]>([]);
   const [currentDoc, setCurrentDoc] = useState("");
 
-
   const handleSend = async () => {
     if (!input) return;
     const userMessage: Message = { role: "user", text: input };
@@ -26,7 +25,7 @@ export default function SynthHRApp() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input })
+        body: JSON.stringify({ message: input }),
       });
 
       const data = await response.json();
@@ -53,7 +52,14 @@ export default function SynthHRApp() {
         <CardContent>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {messages.map((msg, index) => (
-              <p key={index} className={msg.role === "user" ? "text-right" : "text-left font-semibold"}>
+              <p
+                key={index}
+                className={
+                  msg.role === "user"
+                    ? "text-right"
+                    : "text-left font-semibold"
+                }
+              >
                 <span className="block whitespace-pre-wrap">{msg.text}</span>
               </p>
             ))}
@@ -79,7 +85,9 @@ export default function SynthHRApp() {
             value={currentDoc}
             onChange={(e) => setCurrentDoc(e.target.value)}
           />
-          <Button className="mt-2" onClick={handleSaveTemplate}>Save as Template</Button>
+          <Button className="mt-2" onClick={handleSaveTemplate}>
+            Save as Template
+          </Button>
         </CardContent>
       </Card>
 
@@ -88,7 +96,9 @@ export default function SynthHRApp() {
           <h2 className="text-2xl font-semibold mb-2">Saved Templates</h2>
           <ul className="list-disc pl-5">
             {templates.map((template, idx) => (
-              <li key={idx} className="whitespace-pre-wrap">{template}</li>
+              <li key={idx} className="whitespace-pre-wrap">
+                {template}
+              </li>
             ))}
           </ul>
         </CardContent>
