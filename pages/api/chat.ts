@@ -20,10 +20,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const formattedMessages = messages.map((msg: ChatMessage) => ({
-      role: msg.role === "ai" ? "assistant" : "user",
-      content: msg.text,
-    }));
+    const formattedMessages = messages.map((msg: ChatMessage) => {
+      let role: "user" | "assistant";
+      if (msg.role === "ai") {
+        role = "assistant";
+      } else {
+        role = "user";
+      }
+      return {
+        role,
+        content: msg.text,
+      };
+    });
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
