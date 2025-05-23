@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
+import { ChatCompletionUserMessageParam, ChatCompletionAssistantMessageParam } from "openai/resources/chat/completions";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-type ChatMessage = {
+// Define types for safe mapping
+type Message = {
   role: "user" | "ai";
   text: string;
 };
@@ -20,18 +22,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const formattedMessages = messages.map((msg: ChatMessage) => {
-      let role: "user" | "assistant";
-      if (msg.role === "ai") {
-        role = "assistant";
-      } else {
-        role = "user";
-      }
-      return {
-        role,
+    const formattedMessages: (ChatCompletionUserMessageParam | ChatCompletionAssistantMessageParam)[] = messages.map(
+      (msg: Message) => ({
+        role: msg.role === "ai" ? "assistant" : "user",
         content: msg.text,
-      };
-    });
+      })
+    );
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
