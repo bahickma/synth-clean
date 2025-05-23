@@ -5,6 +5,12 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+type ChatMessage = {
+  role: "user" | "ai";
+  text: string;
+  name?: string;
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
@@ -23,19 +29,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           content:
             "You are SynthHR, an AI HR Assistant. Your job is to help users draft HR templates by asking smart, clarifying questions to gather all the necessary details. Once enough information is gathered, generate a complete, ready-to-edit document. Stay professional, friendly, and structured.",
         },
-        ...messages.map((msg: any) => {
+        ...messages.map((msg: ChatMessage) => {
           const role = msg.role === "ai" ? "assistant" : "user";
-          if (role === "function") {
-            // If you have function messages, ensure 'name' is provided
-            return {
-              role,
-              name: msg.name || "function_name", // Replace with actual function name if available
-              content: msg.text,
-            };
-          }
           return {
             role,
             content: msg.text,
+            ...(role === "function" ? { name: msg.name || "function_name" } : {}),
           };
         }),
       ],
